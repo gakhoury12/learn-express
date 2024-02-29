@@ -47,8 +47,42 @@ app.post('/write/adduser', (req, res) => {
   fs.writeFile(path.resolve(__dirname, '../data/users.json'), JSON.stringify(req.users), (err) => {
     if (err) console.log('Failed to write');
     else console.log('User Saved');
+  let  users_with_name = req.users.filter(function(user) {
+    return user.username === name;
+  })  
+    console.log(users_with_name);
+    if(users_with_name.length===0) {
+      res.send({
+        error: {message: `${name} not found`, status: 404}
+      })
+    } else {
+      res.send(users_with_name);
+    }
   });
   res.send('done');
+
+  try {
+    const response = await axios.get("http://localhost:8000/read/user");
+    const data = response.data;
+    if(data.error) {
+      setSearchEmail([{id: 404, email: "Not found"}])
+    } else {
+      setSearchEmail(data);
+    }
+    setShowEmail(true);
+    setSearchUserForm(false);
+    setShowAddUserForm(false);
+    setUsernames(false);
+  }
+
+  app.use('read/username', addMsgToRequest);
+  app.get('read/username/:name', (req, res) => {
+    let name = req.params.name;
+    let users_with_Name = req.users.filter(function(user) {
+      return user.username === name;
+    })
+    console.log(users_with_Name);
+  })
 })
 
 app.listen(port, () => {
