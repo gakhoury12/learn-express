@@ -73,7 +73,7 @@ app.post('/write/adduser', (req, res) => {
     setSearchUserForm(false);
     setShowAddUserForm(false);
     setUsernames(false);
-  }
+  } catch {}
 
   app.use('read/username', addMsgToRequest);
   app.get('read/username/:name', (req, res) => {
